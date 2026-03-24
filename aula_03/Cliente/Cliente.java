@@ -29,4 +29,8 @@ public class Cliente {
         System.out.println(nome + " comprou " + quantidade + " " + produto.getNome() + " e pagou " + produto.getPreco() + "R$");
 
     }
+
+    public String getCpf(String cpf){
+        return this.cpf = cpf;
+    }
 }

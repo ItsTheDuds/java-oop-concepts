@@ -9,7 +9,6 @@ public class Cliente {
     private String cpf;
     private int idade;
     private LocalDate dataNascimento;
-    private String email;
     private String numeroConta;
     private String senha;
     private double saldo;
@@ -21,11 +20,12 @@ public class Cliente {
         return nome;
     }
 
-    public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome inválido!");
+    public boolean setNome(String nome) {
+        if (nome == null || nome.trim().split("\\s+").length < 2) {
+            return false;
         }
         this.nome = nome.trim();
+        return true;
     }
 
     // ----- CPF -----
@@ -69,16 +69,6 @@ public class Cliente {
     // ----- IDADE -----
     public int getIdade() {
         return idade;
-    }
-
-
-    // ----- EMAIL -----
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     // ----- NUMERO DA CONTA -----

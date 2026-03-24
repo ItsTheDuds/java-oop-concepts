@@ -9,7 +9,6 @@ public class Telas {
         System.out.println(label + ": ");
         return sc.nextLine().trim();
     }
-
     public static double lerValor(String label) {
         System.out.println(label + ": ");
         try {
