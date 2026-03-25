@@ -1,7 +1,11 @@
 package Projeto_Banco_Digital;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 
 public class Cliente {
 
@@ -14,6 +18,7 @@ public class Cliente {
     private double saldo;
     private int tentativasFalhas;
     private boolean bloqueada;
+    public int idadeMinima = 16;
 
     // ----- NOME -----
     public String getNome() {
@@ -32,10 +37,10 @@ public class Cliente {
     public void setCpf(String cpf) {
         int limiteMaximo = 11;
         if (cpf == null) {
-        throw new IllegalArgumentException("CPF não pode ser nulo.");
+            throw new IllegalArgumentException("CPF não pode ser nulo.");
         }
         if (cpf.length() > limiteMaximo) {
-        throw new IllegalArgumentException("O texto excede o limite de " + limiteMaximo + " caracteres.");
+            throw new IllegalArgumentException("O texto excede o limite de " + limiteMaximo + " caracteres.");
         }
         this.cpf = cpf;
     }
@@ -49,21 +54,33 @@ public class Cliente {
         return dataNascimento;
     }
 
-    public void setDataNascimento(LocalDate dataNascimento) {
-        if (dataNascimento == null) {
-            throw new IllegalArgumentException("Data de nascimento não pode ser nula!");
-        }
-        if (dataNascimento.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Data de nascimento não pode ser no futuro!");
-        }
+    public boolean setDataNascimento(String data) {
 
-        int idadeCalculada = Period.between(dataNascimento, LocalDate.now()).getYears();
-        if (idadeCalculada < 18) {
-            throw new IllegalArgumentException("Cliente deve ter pelo menos 18 anos!");
-        }
+        try {
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate dataNascimento = LocalDate.parse(data, formatador);
+            if (dataNascimento == null) {
+                return false;
+            }
+            if (dataNascimento.isAfter(LocalDate.now())) {
+                return false;
+            }
 
-        this.dataNascimento = dataNascimento;
-        this.idade = idadeCalculada;
+            if (dataNascimento.isBefore(LocalDate.of(1900, 1, 1))) {
+                return false;
+            }
+
+            int idadeCalculada = Period.between(dataNascimento, LocalDate.now()).getYears();
+            if (idadeCalculada < idadeMinima) {
+                return false;
+            }
+            this.dataNascimento = dataNascimento;
+            this.idade = idadeCalculada;
+            return true;
+
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     // ----- IDADE -----
@@ -125,6 +142,6 @@ public class Cliente {
             this.bloqueada = true;
             System.out.println("Conta bloqueada por tentativas de login excedidas!");
         }
-        
+
     }
 }
