@@ -34,15 +34,18 @@ public class Cliente {
     }
 
     // ----- CPF -----
-    public void setCpf(String cpf) {
-        int limiteMaximo = 11;
-        if (cpf == null) {
-            throw new IllegalArgumentException("CPF não pode ser nulo.");
+    public boolean setCpf(String cpf) {
+        // Limpa o CPF, removendo qualquer caractere que não seja número
+        String cpfLimpo = cpf.replaceAll("[^0-9]", "");
+
+        // Verifica se o CPF é válido
+        if (ValidaCPF.isCPF(cpfLimpo)) {
+            this.cpf = cpfLimpo; // Atribui o CPF validado
+            return true; // Retorna true se o CPF for válido
+        } else {
+            System.out.println("CPF inválido.");
+            return false; // Retorna false se o CPF for inválido
         }
-        if (cpf.length() > limiteMaximo) {
-            throw new IllegalArgumentException("O texto excede o limite de " + limiteMaximo + " caracteres.");
-        }
-        this.cpf = cpf;
     }
 
     public String getCpf() {

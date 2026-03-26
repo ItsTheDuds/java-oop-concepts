@@ -3,10 +3,12 @@ package Projeto_Banco_Digital;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class Controlador {
-    private Cliente cliente;
+import java.util.Scanner;
+import java.time.LocalDate;
+import Projeto_Banco_Digital.ValidaCPF;
 
-    public void criarConta() {
+public class Controlador {
+    public static void criarConta() {
         // 1. Imprimir cabeçalho
         Telas.mostrarMensagem("Criar Conta");
 
@@ -18,21 +20,36 @@ public class Controlador {
         String nome = sc.nextLine();
 
         // Coletando a data de nascimento
-        System.out.print("Data de Nascimento (yyyy-mm-dd): ");
+        System.out.print("Data de Nascimento (dd-mm-yyyy): ");
         String dataNascimentoStr = sc.nextLine();
 
         // Convertendo a String para LocalDate
         LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr);
 
         // Criando e inicializando o objeto cliente
-        cliente = new Cliente();
-        cliente.setNome(nome);
-        cliente.setDataNascimento(dataNascimento);
+        Cliente c = new Cliente();
+        c.setNome(nome);
+        c.setDataNascimento(dataNascimento);
+
+        // Coletando e validando o CPF
+        // Coletando e validando o CPF
+        String cpf;
+        boolean cpfValido;
+        do {
+            System.out.print("CPF: ");
+            cpf = sc.nextLine();
+            cpfValido = c.setCpf(cpf); // O método setCpf agora retorna true ou false
+            if (!cpfValido) {
+                System.out.println("CPF inválido. Tente novamente.");
+            }
+        } while (!cpfValido);
+
+        c.setCpf(cpf); // Assumindo que você tem um método setCpf na classe Cliente
 
         // Coletando a senha do cliente
         System.out.print("Senha: ");
         String senha = sc.nextLine();
-        cliente.setSenha(senha);
+        c.setSenha(senha);
 
         // Exibindo mensagem de sucesso
         System.out.println("\nConta validada com sucesso!");

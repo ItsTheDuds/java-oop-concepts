@@ -4,28 +4,26 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int opcao = 0;
-        do {
-            Telas.MenuPrincipal();
-            opcao = Telas.lerOpcao();
-            switch (opcao) {
+        int opcao;
 
+        do {
+            Telas.menuPrincipal();
+            opcao = Telas.lerOpcao();
+
+            switch (opcao) {
                 case 1:
-                    /// Lógica de cadastrar conta
-                    System.out.println("WIP");
+                    Controlador.criarConta();
                     break;
                 case 2:
-                    /// Lógica de acessar conta
-                    System.out.println("WIP");
+                    Controlador.acessarConta();
                     break;
                 case 3:
-                    System.out.println("Saindo...");
+                    Telas.mensagem("Encerrando. Até logo!", false);
                     break;
                 default:
-                    System.out.println("Opção inválida");
-                    System.out.println(opcao);
-                    break;
+                    Telas.mensagem("Opção inválida. Tente novamente.", true);
             }
+
         } while (opcao != 3);
     }
 }
