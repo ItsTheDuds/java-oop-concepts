@@ -5,7 +5,7 @@ public class Telas {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    private static void limparTela() {
+    public static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
