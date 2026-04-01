@@ -1,7 +1,5 @@
 package Projeto_Banco_Digital;
 
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
         int opcao;
@@ -15,13 +13,12 @@ public class Main {
                     Controlador.criarConta();
                     break;
                 case 2:
-                    Controlador.acessarConta();
                     break;
                 case 3:
-                    Telas.mensagem("Encerrando. Até logo!", false);
+                    Telas.mostrarMensagem("Encerrando. Até logo!");
                     break;
                 default:
-                    Telas.mensagem("Opção inválida. Tente novamente.", true);
+                    Telas.mostrarMensagem("Opção inválida. Tente novamente.");
             }
 
         } while (opcao != 3);

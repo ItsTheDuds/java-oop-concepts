@@ -1,11 +1,10 @@
 package Projeto_Banco_Digital;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.FormatStyle;
+import java.time.format.ResolverStyle;
 
 public class Cliente {
 
@@ -20,6 +19,12 @@ public class Cliente {
     private boolean bloqueada;
     public int idadeMinima = 16;
 
+    private Historico historico = new Historico();
+
+    public Historico getHistorico() {
+        return historico;
+    }
+
     // ----- NOME -----
     public String getNome() {
         return nome;
@@ -27,6 +32,7 @@ public class Cliente {
 
     public boolean setNome(String nome) {
         if (nome == null || nome.trim().split("\\s+").length < 2) {
+            Telas.mensagemErro("Nome inválido", true);
             return false;
         }
         this.nome = nome.trim();
@@ -44,6 +50,7 @@ public class Cliente {
             return true; // Retorna true se o CPF for válido
         } else {
             System.out.println("CPF inválido.");
+            Telas.mensagemErro("CPF inválido", true);
             return false; // Retorna false se o CPF for inválido
         }
     }
@@ -60,21 +67,24 @@ public class Cliente {
     public boolean setDataNascimento(String data) {
 
         try {
-            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatador = DateTimeFormatter
+                    .ofPattern("dd/MM/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
             LocalDate dataNascimento = LocalDate.parse(data, formatador);
-            if (dataNascimento == null) {
-                return false;
-            }
             if (dataNascimento.isAfter(LocalDate.now())) {
+                Telas.mensagemErro("Data inválida", true);
                 return false;
             }
 
             if (dataNascimento.isBefore(LocalDate.of(1900, 1, 1))) {
+                Telas.mensagemErro("Data inválida", true);
                 return false;
             }
 
             int idadeCalculada = Period.between(dataNascimento, LocalDate.now()).getYears();
             if (idadeCalculada < idadeMinima) {
+                Telas.mensagemErro("Data inválida", true);
                 return false;
             }
             this.dataNascimento = dataNascimento;

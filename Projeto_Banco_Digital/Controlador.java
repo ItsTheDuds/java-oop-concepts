@@ -1,9 +1,5 @@
 package Projeto_Banco_Digital;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
-
 public class Controlador {
 
     public static void criarConta() {
@@ -21,31 +17,28 @@ public class Controlador {
             if (!c.setNome(nome)) {
                 System.out.println("Nome inválido. Tente novamente.");
             }
-        } while (!c.getNome().equals(nome.trim()));
+        } while (!c.setNome(nome));
 
         // Coletando CPF
         String cpf;
-        boolean cpfValido;
         do {
-            cpf = Telas.lerTexto("CPF: ");
-            cpfValido = c.setCpf(cpf); // O método setCpf retorna true ou false
-            if (!cpfValido) {
+            cpf = Telas.lerTexto("Digite seu CPF:");
+            if (!c.setCpf(cpf)) {
                 System.out.println("CPF inválido. Tente novamente.");
             }
-        } while (!cpfValido);
+        } while (!c.setCpf(cpf));
 
-        // Coletando a data de nascimento
-        String dataNascimentoStr = Telas.lerTexto("Digite  sua data de nascimento (dd-MM-yyyy):");
+        String dataNascimento;
+        do {
+            // Coletando a data de nascimento
+            dataNascimento = Telas.lerTexto("Digite  sua data de nascimento (dd-MM-yyyy):");
+            // Definindo a data de nascimento no cliente
+            c.setDataNascimento(dataNascimento);
+            if (!c.setDataNascimento(dataNascimento)) {
+                Telas.mensagemErro("Data de nascimento inválida ou você não atende a idade mínima.", true);
+            }
 
-        // Convertendo a String para LocalDate
-        LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-        // Definindo a data de nascimento no cliente
-        boolean dataValida = c.setDataNascimento(dataNascimentoStr);
-        if (!dataValida) {
-            System.out.println("Data de nascimento inválida ou você não atende a idade mínima.");
-            return; // Ou você pode voltar para o início ou reexecutar a entrada.
-        }
+        } while (!c.setDataNascimento(dataNascimento));
 
         // Coletando a senha do cliente
         String senha = Telas.lerTexto("Informe sua senha: ");
