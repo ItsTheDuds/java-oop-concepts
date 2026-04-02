@@ -40,9 +40,43 @@ public class Controlador {
 
         } while (!c.setDataNascimento(dataNascimento));
 
+        CentralBancaria central = new CentralBancaria();
+
+        Telas.mostrarMensagem("Enviando mensagem para a central ...");
+        String resultado = central.cadastrar(
+            c.getNome(), 
+            c.getCpf(), 
+            c.getDataNascimento()
+        );
+
+        if(resultado.startsWith("ERRO")) {
+            Telas.mensagemErro(resultado, true);
+            return;
+        }
+
+        String numeroConta = resultado;
+
+
         // Coletando a senha do cliente
-        String senha = Telas.lerTexto("Informe sua senha: ");
-        c.setSenha(senha);
+        Telas.limparTela();
+        System.out.println("Conta criada com sucesso.");
+        System.out.println("Seu número da conta é: " + numeroConta);
+        Telas.separador();
+        String senha, confirma;
+
+        do {
+            senha = Telas.lerTexto("Informe sua senha (4 Digitos númericos): ");
+            confirma = Telas.lerTexto("Confirme sua senha: ");
+            if(!senha.equals(confirma)) {
+                Telas.mensagemErro("Senhas não conferem, tente novamente", true);
+            } else if (!senha.matches("\\d(4)") {
+                Telas.mensagemErro("Senha inválida, use exatamente 4 digitos númericos", true);
+            }
+        } while (true);
+
+        boolean senhaOk = central.cadastrarSenha(numeroConta, senha);
+
+        String status = central.login(numeroConta, senha, c);
 
         // Exibindo mensagem de sucesso
         System.out.println("\nConta validada com sucesso!");

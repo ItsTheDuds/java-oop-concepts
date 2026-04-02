@@ -6,22 +6,23 @@ public class Historico {
 
     private List<Transacao> transacoes = new ArrayList<>();
 
-    public void adicionarTransacao(Transacao transacao) {
-        transacoes.add(transacao);
+    public void adicionar(Transacao transacao) {
+        this.transacoes.add(transacao);
     }
 
-    public void listarTransacoes() {
-        if (transacoes.isEmpty()) {
-            System.out.println("Nenhuma transação encontrada.");
-            return;
+    public List<String> listarTransacoes() {
+        List<String> historico = new ArrayList<>();
+
+        if(this.transacoes.isEmpty()) {
+            historico.add("Nenhuma transação encontrada");
+            System.out.println("Nenhuma transação encontrada");
         }
 
-        for (Transacao t : transacoes) {
-            System.out.println(t);
+        for (Transacao t : this.transacoes) {
+            String transacaoFormatada = t.toString();
+            historico.add(transacaoFormatada);
         }
-    }
 
-    public List<Transacao> getTransacoes() {
-        return transacoes;
+        return historico;
     }
 }

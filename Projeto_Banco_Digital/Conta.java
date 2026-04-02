@@ -14,6 +14,9 @@ public class Conta {
             .ofPattern("dd/MM/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
 
+
+    //GETTERS & SETTERS
+    
     public String getNumeroConta() {
         return numeroConta;
     }
@@ -31,7 +34,7 @@ public class Conta {
             return false;
         }
         this.saldo += valor;
-        historico.adicionarTransacao(
+        historico.adicionar(
                 new Transacao("DEPOSITO", valor, data.format(FORMATADOR)));
         return true;
     }
@@ -41,7 +44,7 @@ public class Conta {
             return false;
         }
         this.saldo -= valor;
-        historico.adicionarTransacao(
+        historico.adicionar(
                 new Transacao("SAQUE", valor, data.format(FORMATADOR)));
         return true;
     }

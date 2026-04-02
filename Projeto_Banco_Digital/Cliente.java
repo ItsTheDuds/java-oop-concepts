@@ -18,12 +18,9 @@ public class Cliente {
     private int tentativasFalhas;
     private boolean bloqueada;
     public int idadeMinima = 16;
-
-    private Historico historico = new Historico();
-
-    public Historico getHistorico() {
-        return historico;
-    }
+    private static final DateTimeFormatter FORMATADOR = DateTimeFormatter
+            .ofPattern("dd/MM/uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
 
     // ----- NOME -----
     public String getNome() {
@@ -60,8 +57,8 @@ public class Cliente {
     }
 
     // ----- DATA DE NASCIMENTO -----
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
+    public String getDataNascimento() {
+        return dataNascimento.format(FORMATADOR);
     }
 
     public boolean setDataNascimento(String data) {
