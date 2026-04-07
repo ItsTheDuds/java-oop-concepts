@@ -13,12 +13,13 @@ public class Main {
                     Controlador.criarConta();
                     break;
                 case 2:
+                    Controlador.acessarConta();
                     break;
                 case 3:
-                    Telas.mostrarMensagem("Encerrando. Até logo!");
+                    Telas.mensagem("Encerrando. Até logo!", false);
                     break;
                 default:
-                    Telas.mostrarMensagem("Opção inválida. Tente novamente.");
+                    Telas.mensagem("Opção inválida. Tente novamente.", false);
             }
 
         } while (opcao != 3);

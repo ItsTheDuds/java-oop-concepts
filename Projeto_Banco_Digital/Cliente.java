@@ -1,157 +1,146 @@
 package Projeto_Banco_Digital;
-
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 public class Cliente {
 
+    private static final int IDADE_MINIMA = 16;
+    private static final int ANO_MINIMO = 1900;
+    private static final DateTimeFormatter formatador = DateTimeFormatter
+    .ofPattern("dd/MM/uuuu")
+    .withResolverStyle(ResolverStyle.STRICT);
+
     private String nome;
     private String cpf;
-    private int idade;
     private LocalDate dataNascimento;
     private String numeroConta;
     private String senha;
     private double saldo;
-    private int tentativasFalhas;
     private boolean bloqueada;
-    public int idadeMinima = 16;
-    private static final DateTimeFormatter FORMATADOR = DateTimeFormatter
-            .ofPattern("dd/MM/uuuu")
-            .withResolverStyle(ResolverStyle.STRICT);
+    private int tentativasFalhas;
+    private Conta conta;
 
-    // ----- NOME -----
+    // GETTERS
+
     public String getNome() {
         return nome;
-    }
-
-    public boolean setNome(String nome) {
-        if (nome == null || nome.trim().split("\\s+").length < 2) {
-            Telas.mensagemErro("Nome inválido", true);
-            return false;
-        }
-        this.nome = nome.trim();
-        return true;
-    }
-
-    // ----- CPF -----
-    public boolean setCpf(String cpf) {
-        // Limpa o CPF, removendo qualquer caractere que não seja número
-        String cpfLimpo = cpf.replaceAll("[^0-9]", "");
-
-        // Verifica se o CPF é válido
-        if (ValidaCPF.isCPF(cpfLimpo)) {
-            this.cpf = cpfLimpo; // Atribui o CPF validado
-            return true; // Retorna true se o CPF for válido
-        } else {
-            System.out.println("CPF inválido.");
-            Telas.mensagemErro("CPF inválido", true);
-            return false; // Retorna false se o CPF for inválido
-        }
     }
 
     public String getCpf() {
         return cpf;
     }
 
-    // ----- DATA DE NASCIMENTO -----
     public String getDataNascimento() {
-        return dataNascimento.format(FORMATADOR);
+        return dataNascimento.format(formatador);
+    }
+
+    public String getNumeroConta() {
+        return numeroConta;
+    }
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public boolean isBloqueada() {
+        return bloqueada;
+    }
+
+    public int getTentativasFalhas() {
+        return tentativasFalhas;
+    }
+
+    // SETTERS
+
+    public boolean setNome(String nome) {
+        if (nome == null || nome.trim().split("\\s+").length < 2) {
+            return false;
+        }
+        this.nome = nome.trim();
+        return true;
+    }
+
+    public boolean setCpf(String cpf) {
+        if (cpf == null) {
+            return false;
+        }
+        String cpfLimpo = cpf.replaceAll("[^0-9]", "");
+        if (!ValidaCPF.isCPF(cpfLimpo)) {
+            return false;
+        }
+        this.cpf = cpfLimpo;
+        return true;
     }
 
     public boolean setDataNascimento(String data) {
-
+        // Valida se data existe e se o cliente tem idade mínima
+        if (data == null)
+            return false;
         try {
-            DateTimeFormatter formatador = DateTimeFormatter
-                    .ofPattern("dd/MM/uuuu")
-                    .withResolverStyle(ResolverStyle.STRICT);
-
             LocalDate dataNascimento = LocalDate.parse(data, formatador);
-            if (dataNascimento.isAfter(LocalDate.now())) {
-                Telas.mensagemErro("Data inválida", true);
-                return false;
-            }
+            LocalDate hoje = LocalDate.now();
 
-            if (dataNascimento.isBefore(LocalDate.of(1900, 1, 1))) {
-                Telas.mensagemErro("Data inválida", true);
+            if (dataNascimento.getYear() < ANO_MINIMO)
                 return false;
-            }
 
-            int idadeCalculada = Period.between(dataNascimento, LocalDate.now()).getYears();
-            if (idadeCalculada < idadeMinima) {
-                Telas.mensagemErro("Data inválida", true);
+            LocalDate idadeMinima = hoje.minusYears(IDADE_MINIMA);
+            if (dataNascimento.isAfter(idadeMinima))
                 return false;
-            }
+
             this.dataNascimento = dataNascimento;
-            this.idade = idadeCalculada;
             return true;
-
         } catch (DateTimeParseException e) {
             return false;
         }
     }
 
-    // ----- IDADE -----
-    public int getIdade() {
-        return idade;
+    public boolean setSenha(String senha) {
+        if (senha == null || !senha.matches("\\d{4}")) {
+            return false;
+        }
+        this.senha = senha;
+        return true;
     }
 
-    // ----- NUMERO DA CONTA -----
-    public String getNumeroConta() {
-        return numeroConta;
-    }
-
+    /* Define o número da conta (atribuído pela CentralBancaria). */
     public void setNumeroConta(String numeroConta) {
         this.numeroConta = numeroConta;
     }
 
-    // ----- SENHA -----
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    // ----- SALDO -----
-    public double getSaldo() {
-        return saldo;
-    }
-
+    /* Atualiza o saldo (atribuído pela CentralBancaria após operações). */
     public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
-    // ----- TENTATIVAS FALHAS -----
-    public int getTentativasFalhas() {
-        return tentativasFalhas;
-    }
-
-    public void setTentativasFalhas(int tentativasFalhas) {
-        this.tentativasFalhas = tentativasFalhas;
-    }
-
-    // ----- BLOQUEADA -----
-    public boolean isBloqueada() {
-        return bloqueada;
-    }
-
+    /* Permite bloquear ou desbloquear a conta manualmente. */
     public void setBloqueada(boolean bloqueada) {
         this.bloqueada = bloqueada;
     }
 
-    public void registrarTentativaFalha() {
-        // Incrementa
-        this.tentativasFalhas++;
+    // MÉTODOS DE NEGÓCIO
 
-        // Verifica se atingiu o limite
+    /*
+     * Registra uma tentativa de login com senha errada.
+     * Bloqueia automaticamente ao atingir 3 erros consecutivos.
+     */
+    public void registrarTentativaFalha() {
+        this.tentativasFalhas++;
         if (this.tentativasFalhas >= 3) {
             this.bloqueada = true;
-            System.out.println("Conta bloqueada por tentativas de login excedidas!");
         }
+    }
 
+    /* Zera o contador após login bem-sucedido. */
+    public void resetarTentativasFalhas() {
+        this.tentativasFalhas = 0;
+    }
+
+    /*
+     * Verifica senha sem expô-la: a comparação fica dentro da própria classe.
+     * Isso é encapsulamento — a senha nunca sai do objeto.
+     */
+    public boolean verificarSenha(String senhaInformada) {
+        return this.senha != null && this.senha.equals(senhaInformada);
     }
 }

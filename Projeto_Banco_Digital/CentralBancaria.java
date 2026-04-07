@@ -1,4 +1,5 @@
 package Projeto_Banco_Digital;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -187,13 +188,11 @@ public class CentralBancaria {
     }
 
     /*
-     * Parseia a resposta do GET /all: {"value":[...], "Count":N}
+     * Parseia a resposta do GET: array direto [{...}, {...}]
      */
     private List<Registro> parseTodos(String json) {
         List<Registro> lista = new ArrayList<>();
-        int idx = json.indexOf("\"value\"");
-        if (idx == -1) return lista;
-        int arrInicio = json.indexOf("[", idx);
+        int arrInicio = json.indexOf("[");
         if (arrInicio == -1) return lista;
         int pos = arrInicio + 1;
         while (pos < json.length()) {

@@ -1,5 +1,4 @@
 package Projeto_Banco_Digital;
-
 import java.util.Scanner;
 
 public class Telas {
@@ -10,10 +9,6 @@ public class Telas {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
-    }
-
-    public static void mostrarMensagem(String msg) {
-        System.out.println(msg);
     }
 
     // MENUS
@@ -80,7 +75,7 @@ public class Telas {
 
     // MENSAGENS
 
-    public static void mensagemErro(String texto, boolean eErro) {
+    public static void mensagem(String texto, boolean eErro) {
         limparTela();
 
         if (!eErro) {
