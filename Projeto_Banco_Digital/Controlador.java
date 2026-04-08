@@ -91,6 +91,7 @@ public class Controlador {
             switch (status) {
                 case "OK":
                     Telas.mensagem("Você acessou sua conta com sucesso", false);
+                    menuConta(cliente);
                     return;
 
                 case "SENHA_INCORRETA":
@@ -116,88 +117,75 @@ public class Controlador {
 
     public static void menuConta(Cliente cliente) {
         int opcao;
-
         do {
             Telas.menuConta(cliente.getNome(), cliente.getSaldo());
             opcao = Telas.lerOpcao();
 
             switch (opcao) {
-
-                case 1: // Depositar
-                    double valorDep = Telas.lerValor("Valor para depósito");
-                    if (valorDep <= 0) {
-                        Telas.mensagem("Valor inválido.", true);
-                        break;
-                    }
-
-                    if (central.depositar(cliente, valorDep)) {
-                        Telas.mensagem("Depósito realizado com sucesso.", false);
-                    } else {
-                        Telas.mensagem("Erro ao realizar depósito.", true);
-                    }
+                case 1:
+                    depositar(cliente);
                     break;
-
-                case 2: // Sacar
-                    double valorSaq = Telas.lerValor("Valor para saque");
-                    if (valorSaq <= 0) {
-                        Telas.mensagem("Valor inválido.", true);
-                        break;
-                    }
-
-                    if (valorSaq > cliente.getSaldo()) {
-                        Telas.mensagem("Saldo insuficiente.", true);
-                        break;
-                    }
-
-                    if (central.sacar(cliente, valorSaq)) {
-                        Telas.mensagem("Saque realizado com sucesso.", false);
-                    } else {
-                        Telas.mensagem("Erro ao realizar saque.", true);
-                    }
+                case 2:
+                    sacar(cliente);
                     break;
-
-                case 3: // Transferir
-                    String contaDestino = Telas.lerTexto("Conta destino");
-                    double valorTransf = Telas.lerValor("Valor para transferência");
-
-                    if (valorTransf <= 0) {
-                        Telas.mensagem("Valor inválido.", true);
-                        break;
-                    }
-
-                    if (valorTransf > cliente.getSaldo()) {
-                        Telas.mensagem("Saldo insuficiente.", true);
-                        break;
-                    }
-
-                    if (central.transferir(cliente, contaDestino, valorTransf)) {
-                        Telas.mensagem("Transferência realizada com sucesso.", false);
-                    } else {
-                        Telas.mensagem("Erro na transferência.", true);
-                    }
+                case 3:
+                    transferir(cliente);
                     break;
-
-                case 4: // Extrato
-                    Telas.limparTela();
-                    System.out.println("======= EXTRATO =======");
-
-                    for (String linha : central.getExtrato(cliente)) {
-                        System.out.println(linha);
-                    }
-
-                    Telas.separador();
-                    System.out.println("Pressione ENTER para continuar...");
-                    new Scanner(System.in).nextLine();
+                case 4:
+                    exibirExtrato(cliente);
                     break;
-
-                case 5: // Sair
+                case 5:
                     Telas.mensagem("Saindo da conta...", false);
                     break;
-
                 default:
                     Telas.mensagem("Opção inválida.", true);
+                    break;
             }
 
         } while (opcao != 5);
+    }
+
+    // Métodos individuais
+    private static void depositar(Cliente cliente) {
+        double valor = Telas.lerValor("Valor para depósito");
+        if (central.depositar(cliente, valor)) {
+            Telas.mensagem("Depósito realizado com sucesso.", false);
+        } else {
+            Telas.mensagem("Erro ao realizar depósito.", true);
+        }
+    }
+
+    private static void sacar(Cliente cliente) {
+        double valor = Telas.lerValor("Valor para saque");
+        if (central.sacar(cliente, valor)) {
+            Telas.mensagem("Saque realizado com sucesso.", false);
+        } else {
+            Telas.mensagem("Erro ao realizar saque.", true);
+        }
+    }
+
+    private static void transferir(Cliente cliente) {
+        String contaDestino = Telas.lerTexto("Conta destino");
+        double valor = Telas.lerValor("Valor para transferência");
+
+        if (valor <= 0) {
+            Telas.mensagem("Valor inválido.", true);
+            return;
+        }
+
+        if (central.transferir(cliente, contaDestino, valor)) {
+            Telas.mensagem("Transferência realizada com sucesso.", false);
+        } else {
+            Telas.mensagem("Erro na transferência.", true);
+        }
+    }
+
+    private static void exibirExtrato(Cliente cliente) {
+        System.out.println("======= EXTRATO =======");
+        for (String linha : central.getExtrato(cliente)) {
+            System.out.println(linha);
+        }
+        Telas.separador();
+        Telas.lerTexto("Digite enter para continuar");
     }
 }
