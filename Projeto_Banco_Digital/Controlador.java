@@ -1,6 +1,6 @@
 package Projeto_Banco_Digital;
 
-import java.util.Scanner;
+import java.util.List;
 
 public class Controlador {
     private static final CentralBancaria central = new CentralBancaria();
@@ -156,6 +156,13 @@ public class Controlador {
     }
 
     private static void sacar(Cliente cliente) {
+        String senha = Telas.lerTexto("Senha");
+
+        if (!cliente.verificarSenha(senha)) {
+            Telas.mensagem("Senha incorreta", true);
+            return;
+        }
+
         double valor = Telas.lerValor("Valor para saque");
         if (central.sacar(cliente, valor)) {
             Telas.mensagem("Saque realizado com sucesso.", false);
@@ -165,6 +172,12 @@ public class Controlador {
     }
 
     private static void transferir(Cliente cliente) {
+        String senha = Telas.lerTexto("Senha");
+        if (!cliente.verificarSenha(senha)) {
+            Telas.mensagem("Senha incorreta", true);
+            return;
+        }
+
         String contaDestino = Telas.lerTexto("Conta destino");
         double valor = Telas.lerValor("Valor para transferência");
 
@@ -181,11 +194,112 @@ public class Controlador {
     }
 
     private static void exibirExtrato(Cliente cliente) {
-        System.out.println("======= EXTRATO =======");
-        for (String linha : central.getExtrato(cliente)) {
-            System.out.println(linha);
-        }
-        Telas.separador();
-        Telas.lerTexto("Digite enter para continuar");
+
+        int opcao;
+
+        do {
+            Telas.limparTela();
+            System.out.println("""
+                    ======= EXTRATO =======
+                    1 - Ver tudo
+                    2 - Depósitos
+                    3 - Saques
+                    4 - Transferências enviadas
+                    5 - Transferências recebidas
+                    0 - Voltar
+                    """);
+            
+            System.out.print("Selecione uma opção: ");
+            opcao = Telas.lerOpcao();
+
+            List<String> extrato = central.getExtrato(cliente);
+
+            switch (opcao) {
+
+                case 1 -> {
+                    Telas.limparTela();
+                    System.out.println("\n--- EXTRATO COMPLETO ---");
+
+                    if (extrato.isEmpty()) {
+                        System.out.println("Nenhuma movimentação encontrada.");
+                    } else {
+                        extrato.forEach(System.out::println);
+                    }
+                }
+
+                case 2 -> {
+                    Telas.limparTela();
+                    System.out.println("\n--- DEPÓSITOS ---");
+
+                    List<String> filtrado = extrato.stream()
+                            .filter(l -> l.contains("DEPOSITO"))
+                            .toList();
+
+                    if (filtrado.isEmpty()) {
+                        System.out.println("Nenhum depósito encontrado.");
+                    } else {
+                        filtrado.forEach(System.out::println);
+                    }
+                }
+
+                case 3 -> {
+                    Telas.limparTela();
+                    System.out.println("\n--- SAQUES ---");
+
+                    List<String> filtrado = extrato.stream()
+                            .filter(l -> l.contains("SAQUE"))
+                            .toList();
+
+                    if (filtrado.isEmpty()) {
+                        System.out.println("Nenhum saque realizado.");
+                    } else {
+                        filtrado.forEach(System.out::println);
+                    }
+                }
+
+                case 4 -> {
+                    Telas.limparTela();
+                    System.out.println("\n--- TRANSFERÊNCIAS ENVIADAS ---");
+
+                    List<String> filtrado = extrato.stream()
+                            .filter(l -> l.contains("TRANSFERENCIA_ENVIADA"))
+                            .toList();
+
+                    if (filtrado.isEmpty()) {
+                        System.out.println("Nenhuma transferência enviada.");
+                    } else {
+                        filtrado.forEach(System.out::println);
+                    }
+                }
+
+                case 5 -> {
+                    Telas.limparTela();
+                    System.out.println("\n--- TRANSFERÊNCIAS RECEBIDAS ---");
+
+                    List<String> filtrado = extrato.stream()
+                            .filter(l -> l.contains("TRANSFERENCIA_RECEBIDA"))
+                            .toList();
+
+                    if (filtrado.isEmpty()) {
+                        System.out.println("Nenhuma transferência recebida.");
+                    } else {
+                        filtrado.forEach(System.out::println);
+                    }
+                }
+
+                case 0 -> {
+                    System.out.println("Voltando ao menu...");
+                }
+
+                default -> {
+                    System.out.println("Opção inválida.");
+                }
+            }
+
+            if (opcao != 0) {
+                Telas.lerTexto("\nPressione ENTER para continuar...");
+            }
+
+        } while (opcao != 0);
     }
 }
